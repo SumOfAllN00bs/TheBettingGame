@@ -6,34 +6,34 @@ using System.Threading.Tasks;
 
 namespace TheBettingGame
 {
-    class Bettor
+    public class Point
     {
-        private int money;
-        private Bet current_bet;
+        private int x;
+        private int y;
 
-        public int Money
+        public int X
         {
             get
             {
-                return money;
+                return x;
             }
 
             set
             {
-                money = value;
+                x = value;
             }
         }
 
-        internal Bet Current_Bet
+        public int Y
         {
             get
             {
-                return current_bet;
+                return y;
             }
 
             set
             {
-                current_bet = value;
+                y = value;
             }
         }
     }

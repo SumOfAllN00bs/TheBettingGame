@@ -8,5 +8,19 @@ namespace TheBettingGame
 {
     class RaceTrack
     {
+        private List<Point> trackpositions;
+
+        internal List<Point> TrackPositions
+        {
+            get
+            {
+                return trackpositions;
+            }
+
+            set
+            {
+                trackpositions = value;
+            }
+        }
     }
 }
