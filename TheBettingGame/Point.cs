@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TheBettingGame
 {
-    public class Point
+    public class Point : Object
     {
         private double _x;
         private double _y;
@@ -23,6 +23,20 @@ namespace TheBettingGame
             _x = x;
             _y = y;
             _end = e;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            Point p = obj as Point;
+            if ((Object)p == null)
+            {
+                return false;
+            }
+            return (_x == p.X) && (_y == p.Y);
         }
 
         public double X

@@ -16,5 +16,10 @@ namespace TheBettingGame
         {
             InitializeComponent();
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            MessageBox.Show("Width: " + this.ClientSize.Width + " Height: " + this.ClientSize.Height);
+        }
     }
 }

@@ -35,5 +35,9 @@ namespace TheBettingGame
             }
             return null;
         }
+        public Point GetLast()
+        {
+            return trackpositions.Last();
+        }
     }
 }
