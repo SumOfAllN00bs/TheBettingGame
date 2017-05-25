@@ -8,32 +8,59 @@ namespace TheBettingGame
 {
     public class Point
     {
-        private int x;
-        private int y;
+        private double _x;
+        private double _y;
+        private bool _end;
 
-        public int X
+        public Point()
+        {
+            _x = 0;
+            _y = 0;
+            _end = false;
+        }
+        public Point(double x, double y, bool e)
+        {
+            _x = x;
+            _y = y;
+            _end = e;
+        }
+
+        public double X
         {
             get
             {
-                return x;
+                return _x;
             }
 
             set
             {
-                x = value;
+                _x = value;
             }
         }
 
-        public int Y
+        public double Y
         {
             get
             {
-                return y;
+                return _y;
             }
 
             set
             {
-                y = value;
+                _y = value;
+            }
+        }
+
+        public bool End
+        {
+            get
+            {
+                return _end;
+            }
+
+            set
+            {
+                _end = value;
             }
         }
     }

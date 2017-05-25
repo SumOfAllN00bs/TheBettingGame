@@ -22,5 +22,18 @@ namespace TheBettingGame
                 trackpositions = value;
             }
         }
+
+        public Path GetPath(int i)
+        {
+            if (trackpositions.Count > 1 && i < trackpositions.Count - 1)
+            {
+                Path p = new Path();
+                p.A = trackpositions[i];
+                p.B = trackpositions[i + 1];
+
+                return p;
+            }
+            return null;
+        }
     }
 }

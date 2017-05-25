@@ -8,17 +8,19 @@ namespace TheBettingGame
 {
     class Racer
     {
-        private Point startingPosition; //where the racer is calculating it's journey from. 
-                                        //(the journey isn't the whole race track just a section of it)
 
+        private RaceTrack racetrack;
         private Point currentPosition; //where on the screen the racer is currently located at
-
-        private Point targetPosition; //where the racer is currently trying to head towards
-
+        private Path currentPath;
 
         public event EventHandler OnWin;    //the event of the racer reaching end.
-        public event EventHandler OnLoss;
+        public event EventHandler OnLoss;   //the event of the racer being beaten by another racer. Called from ForceLoss which is called from Game class
 
+        public Racer(RaceTrack _track)
+        {
+            racetrack = _track;
+            currentPath = racetrack.GetPath(0);
+        }
         public void ForceLoss()
         {
             if (OnLoss != null)
