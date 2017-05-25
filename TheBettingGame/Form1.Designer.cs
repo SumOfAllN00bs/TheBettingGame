@@ -28,7 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.pb_BackGround = new System.Windows.Forms.PictureBox();
+            this.gameTic = new System.Windows.Forms.Timer(this.components);
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.pb_BackGround)).BeginInit();
             this.SuspendLayout();
             // 
@@ -40,24 +43,46 @@
             this.pb_BackGround.Size = new System.Drawing.Size(1037, 541);
             this.pb_BackGround.TabIndex = 0;
             this.pb_BackGround.TabStop = false;
+            this.pb_BackGround.Click += new System.EventHandler(this.pb_BackGround_Click);
+            // 
+            // gameTic
+            // 
+            this.gameTic.Enabled = true;
+            this.gameTic.Interval = 1000;
+            this.gameTic.Tick += new System.EventHandler(this.gameTic_Tick);
+            // 
+            // radioButton1
+            // 
+            this.radioButton1.AutoSize = true;
+            this.radioButton1.Location = new System.Drawing.Point(651, 40);
+            this.radioButton1.Name = "radioButton1";
+            this.radioButton1.Size = new System.Drawing.Size(85, 17);
+            this.radioButton1.TabIndex = 1;
+            this.radioButton1.TabStop = true;
+            this.radioButton1.Text = "radioButton1";
+            this.radioButton1.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1037, 541);
+            this.Controls.Add(this.radioButton1);
             this.Controls.Add(this.pb_BackGround);
             this.Name = "Form1";
             this.Text = "Racing";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pb_BackGround)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.PictureBox pb_BackGround;
+        private System.Windows.Forms.Timer gameTic;
+        private System.Windows.Forms.RadioButton radioButton1;
     }
 }
 

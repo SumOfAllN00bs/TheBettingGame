@@ -24,6 +24,14 @@ namespace TheBettingGame
             }
         }
 
+        public void GameTic()
+        {
+            foreach (Racer _racer in runners)
+            {
+                _racer.Think();
+            }
+        }
+
         public void WinnerFound(object o, EventArgs e)
         {
             foreach (Racer R in runners)

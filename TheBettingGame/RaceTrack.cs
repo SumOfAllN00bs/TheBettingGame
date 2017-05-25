@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace TheBettingGame
 {
-    class RaceTrack
+    public class RaceTrack
     {
         private List<Point> trackpositions;
+        private int currentPath = -1;
 
         internal List<Point> TrackPositions
         {
@@ -22,8 +23,12 @@ namespace TheBettingGame
                 trackpositions = value;
             }
         }
-
-        public Path GetPath(int i)
+        public Path GetNext()
+        {
+            currentPath += 1;
+            return GetPath(currentPath);
+        }
+        protected Path GetPath(int i)
         {
             if (trackpositions.Count > 1 && i < trackpositions.Count - 1)
             {

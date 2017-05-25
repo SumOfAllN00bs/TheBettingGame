@@ -10,6 +10,7 @@ namespace TheBettingGame
     {
         private int money;
         private Bet current_bet;
+        private string name;
 
         public int Money
         {
@@ -34,6 +35,19 @@ namespace TheBettingGame
             set
             {
                 current_bet = value;
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+
+            set
+            {
+                name = value;
             }
         }
     }
