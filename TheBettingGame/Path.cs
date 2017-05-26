@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace TheBettingGame
 {
@@ -10,6 +11,7 @@ namespace TheBettingGame
     {
         private Point A1;
         private Point B1;
+        private int radius;
 
         public Point A
         {
@@ -37,9 +39,36 @@ namespace TheBettingGame
             }
         }
 
+        public int Radius
+        {
+            get
+            {
+                return radius;
+            }
+
+            set
+            {
+                radius = value;
+            }
+        }
+
+        public Path()
+        {
+            radius = 5;
+        }
+
         public double Length()
         {
             return Math.Sqrt(Math.Pow(B1.X - A1.X, 2) + Math.Pow(B1.Y - A1.Y, 2)); //calculates the length between two points
+        }
+
+        public bool NearEnd(Point foreign)
+        {
+            if ((foreign.X > B.X - Radius) && (foreign.X < B.X + Radius) && (foreign.Y > B.Y - Radius) && (foreign.Y < B.Y + Radius))
+            {
+                return true;
+            }
+            else return false;
         }
     }
 }

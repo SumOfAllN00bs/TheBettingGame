@@ -44,17 +44,18 @@
             this.pb_BackGround.TabIndex = 0;
             this.pb_BackGround.TabStop = false;
             this.pb_BackGround.Click += new System.EventHandler(this.pb_BackGround_Click);
+            this.pb_BackGround.Paint += new System.Windows.Forms.PaintEventHandler(this.pb_BackGround_Paint);
             // 
             // gameTic
             // 
             this.gameTic.Enabled = true;
-            this.gameTic.Interval = 1000;
+            this.gameTic.Interval = 33;
             this.gameTic.Tick += new System.EventHandler(this.gameTic_Tick);
             // 
             // radioButton1
             // 
             this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(651, 40);
+            this.radioButton1.Location = new System.Drawing.Point(500, 269);
             this.radioButton1.Name = "radioButton1";
             this.radioButton1.Size = new System.Drawing.Size(85, 17);
             this.radioButton1.TabIndex = 1;
