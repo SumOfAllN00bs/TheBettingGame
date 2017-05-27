@@ -62,7 +62,7 @@ namespace TheBettingGame
             if (thinkTime.IsRunning)
             {
                 thinkTime.Stop();
-                delta_time = thinkTime.ElapsedMilliseconds/1000.0;
+                delta_time = thinkTime.ElapsedMilliseconds / 1000.0;
                 thinkTime.Reset();
             }
             if (finished)
@@ -80,7 +80,7 @@ namespace TheBettingGame
                     finished = true;
                     return;
                 }
-                currentPath ++;
+                currentPath++;
                 if (racetrack.GetPath(currentPath) == null)
                 {
                     throw new Exception("Unexpected end of path");
@@ -92,7 +92,7 @@ namespace TheBettingGame
             var Distance = Math.Sqrt(Math.Pow(racetrack.GetPath(currentPath).B.X - Me.Location.X, 2) + Math.Pow(racetrack.GetPath(currentPath).B.Y - Me.Location.Y, 2));
             var DirectionX = (racetrack.GetPath(currentPath).B.X - Me.Location.X) / Distance;
             var DirectionY = (racetrack.GetPath(currentPath).B.Y - Me.Location.Y) / Distance;
-            Me.Location = new Point(    Me.Location.X + (int)(DirectionX * speed * delta_time + chaos.Next(10, 100)), 
+            Me.Location = new Point(Me.Location.X + (int)(DirectionX * speed * delta_time + chaos.Next(10, 100)),
                                         Me.Location.Y + (int)(DirectionY * speed * delta_time));
             //Log.LogWrite(   "Location.X: " + Me.Location.X +
             //                "\r\nLocation.Y: " + Me.Location.Y +

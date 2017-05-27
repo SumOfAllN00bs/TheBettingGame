@@ -57,7 +57,7 @@ namespace TheBettingGame
                 Dog d = new Dog(OvalRaceTrack, radioButton1);
                 RacingAnimals.Add(d);
             }
-            for(int i = 0; i < 3; i++)
+            for (int i = 0; i < 3; i++)
             {
                 BettingAnimals.Add(new Bettor());
             }
