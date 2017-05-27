@@ -10,7 +10,6 @@ namespace TheBettingGame
     public class RaceTrack
     {
         private List<Point> trackpositions;
-        private int currentPath = -1;
 
         internal List<Point> TrackPositions
         {
@@ -24,13 +23,9 @@ namespace TheBettingGame
                 trackpositions = value;
             }
         }
-        public Path GetNext()
+        public Path GetPath(int i)
         {
-            currentPath += 1;
-            return GetPath(currentPath);
-        }
-        protected Path GetPath(int i)
-        {
+            Log.LogWrite("i: " + i);
             if (trackpositions.Count > 1 && i < trackpositions.Count - 1)
             {
                 Path p = new Path();

@@ -54,7 +54,7 @@ namespace TheBettingGame
 
         public Path()
         {
-            radius = 5;
+            radius = 3;
         }
 
         public double Length()
@@ -65,6 +65,16 @@ namespace TheBettingGame
         public bool NearEnd(Point foreign)
         {
             if ((foreign.X > B.X - Radius) && (foreign.X < B.X + Radius) && (foreign.Y > B.Y - Radius) && (foreign.Y < B.Y + Radius))
+            {
+                return true;
+            }
+            else return false;
+        }
+        public bool PastEnd(Point foreign)
+        {
+            var Distance = Math.Sqrt(Math.Pow(foreign.X - A1.X, 2) + Math.Pow(foreign.Y - A1.Y, 2));
+
+            if (Distance >= this.Length())
             {
                 return true;
             }

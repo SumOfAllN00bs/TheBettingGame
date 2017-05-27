@@ -52,7 +52,7 @@ namespace TheBettingGame
 
             OvalRaceTrack.TrackPositions = OvalPoints;
             //MessageBox.Show("Width: " + this.ClientSize.Width + " Height: " + this.ClientSize.Height
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 3; i++)
             {
                 Dog d = new Dog(OvalRaceTrack, radioButton1);
                 RacingAnimals.Add(d);

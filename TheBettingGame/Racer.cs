@@ -14,7 +14,7 @@ namespace TheBettingGame
         private Control _me;
 
         private RaceTrack racetrack;
-        private Path currentPath;
+        private int currentPath;
         private Random chaos = new Random();
         private bool finished = false;
         private double delta_time;
@@ -53,9 +53,9 @@ namespace TheBettingGame
         public Racer(RaceTrack _track, Control racecontrol)
         {
             racetrack = _track;
-            currentPath = racetrack.GetNext();
+            currentPath = 0;
             _me = racecontrol;
-            _me.Location = new Point((int)currentPath.A.X, (int)currentPath.A.Y);
+            _me.Location = new Point((int)racetrack.GetPath(currentPath).A.X, (int)racetrack.GetPath(currentPath).A.Y);
         }
         public void Think()
         {
@@ -69,27 +69,34 @@ namespace TheBettingGame
             {
                 return;
             }
-            if (Me.Location.Equals(racetrack.GetLast()))
+            if (racetrack.GetPath(currentPath).PastEnd(Me.Location)) //racer has reached end of current path. Time to swap to the next one
             {
-                OnWin(this, new EventArgs());
-                return;
-            }
-            else if (currentPath.NearEnd(Me.Location)) //racer has reached end of current path. Time to swap to the next one
-            {
-                currentPath = racetrack.GetNext();
-                Me.Location = new Point(currentPath.A.X, currentPath.A.Y);
-                if (currentPath == null)
+                //Log.LogWrite("racetrack.GetPath(currentPath).B.X: " + racetrack.GetPath(currentPath).B.X +
+                //            "\r\nracetrack.GetPath(currentPath).B.Y: " + racetrack.GetPath(currentPath).B.Y + "\r\n");
+                if (racetrack.GetPath(currentPath).B.X == racetrack.GetLast().X && racetrack.GetPath(currentPath).B.Y == racetrack.GetLast().Y)
+                {
+                    OnWin(this, new EventArgs());
+                    Me.Location = racetrack.GetLast();
+                    finished = true;
+                    return;
+                }
+                currentPath ++;
+                if (racetrack.GetPath(currentPath) == null)
                 {
                     throw new Exception("Unexpected end of path");
                 }
+                Me.Location = new Point(racetrack.GetPath(currentPath).A.X, racetrack.GetPath(currentPath).A.Y);
+
             }
             //moving
-            var VectorLength = Math.Sqrt(Math.Pow(currentPath.B.X - Me.Location.X, 2) + Math.Pow(currentPath.B.Y - Me.Location.Y, 2));
-            Me.Location = new Point(    Me.Location.X + (int)((currentPath.B.X/VectorLength) * speed * delta_time), 
-                                        Me.Location.Y + (int)((currentPath.B.Y/VectorLength) * speed * delta_time));
-            Log.LogWrite("Location.X: " + Me.Location.X +
-                        "\r\nLocation.Y: " + Me.Location.Y +
-                        "\r\nDeltaTime: " + delta_time.ToString() + "\r\n");
+            var Distance = Math.Sqrt(Math.Pow(racetrack.GetPath(currentPath).B.X - Me.Location.X, 2) + Math.Pow(racetrack.GetPath(currentPath).B.Y - Me.Location.Y, 2));
+            var DirectionX = (racetrack.GetPath(currentPath).B.X - Me.Location.X) / Distance;
+            var DirectionY = (racetrack.GetPath(currentPath).B.Y - Me.Location.Y) / Distance;
+            Me.Location = new Point(    Me.Location.X + (int)(DirectionX * speed * delta_time + chaos.Next(10, 100)), 
+                                        Me.Location.Y + (int)(DirectionY * speed * delta_time));
+            //Log.LogWrite(   "Location.X: " + Me.Location.X +
+            //                "\r\nLocation.Y: " + Me.Location.Y +
+            //                "\r\nDeltaTime: " + delta_time.ToString() + "\r\n");
             Me.Location = new Point((int)Me.Location.X, (int)Me.Location.Y);
             if (!thinkTime.IsRunning)
             {
@@ -115,14 +122,14 @@ namespace TheBettingGame
     {
         public Dog(RaceTrack rt, Control rc) : base(rt, rc)
         {
-            Speed = 10;
+            Speed = 70;
         }
     }
     public class Horse : Racer
     {
         public Horse(RaceTrack rt, Control rc) : base(rt, rc)
         {
-            Speed = 30;
+            Speed = 150;
         }
     }
 }
