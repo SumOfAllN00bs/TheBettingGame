@@ -21,6 +21,7 @@ namespace TheBettingGame
             foreach (Racer R in runners)
             {
                 R.OnWin += new EventHandler(WinnerFound);
+                R.Speed = (int)(R.Speed + R.Speed * (new Random().Next(15, 30) / 100.0));
             }
         }
 

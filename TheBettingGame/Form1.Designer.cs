@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.pb_BackGround = new System.Windows.Forms.PictureBox();
             this.gameTic = new System.Windows.Forms.Timer(this.components);
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pb_BackGround)).BeginInit();
             this.SuspendLayout();
             // 
@@ -52,23 +52,21 @@
             this.gameTic.Interval = 33;
             this.gameTic.Tick += new System.EventHandler(this.gameTic_Tick);
             // 
-            // radioButton1
+            // label1
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(500, 269);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(85, 17);
-            this.radioButton1.TabIndex = 1;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "radioButton1";
-            this.radioButton1.UseVisualStyleBackColor = true;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(431, 181);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "label1";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1037, 541);
-            this.Controls.Add(this.radioButton1);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.pb_BackGround);
             this.Name = "Form1";
             this.Text = "Racing";
@@ -83,7 +81,7 @@
 
         private System.Windows.Forms.PictureBox pb_BackGround;
         private System.Windows.Forms.Timer gameTic;
-        private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.Label label1;
     }
 }
 

@@ -17,6 +17,7 @@ namespace TheBettingGame
         private List<Racer> RacingAnimals = new List<Racer>();
         private List<Bettor> BettingAnimals = new List<Bettor>();
         private RaceTrack OvalRaceTrack = new RaceTrack();
+        private List<Control> RacingAnimalsBodies = new List<Control>();
         public Form1()
         {
             InitializeComponent();
@@ -52,9 +53,16 @@ namespace TheBettingGame
 
             OvalRaceTrack.TrackPositions = OvalPoints;
             //MessageBox.Show("Width: " + this.ClientSize.Width + " Height: " + this.ClientSize.Height
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 4; i++)
             {
-                Dog d = new Dog(OvalRaceTrack, radioButton1);
+                RadioButton RB = new RadioButton();
+                RB.Name = "RadioButton_" + i.ToString();
+                RB.Text = i.ToString();
+                RB.Location = new System.Drawing.Point(52 + (i * 5), 58 + (i * 5));
+                RacingAnimalsBodies.Add(RB);
+                this.Controls.Add(RB);
+                RB.BringToFront();
+                Dog d = new Dog(OvalRaceTrack, RB);
                 RacingAnimals.Add(d);
             }
             for (int i = 0; i < 3; i++)
