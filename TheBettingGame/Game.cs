@@ -9,10 +9,10 @@ namespace TheBettingGame
     class Game
     {
         private List<Racer> runners = new List<Racer>();
-        private RaceTrack trackandfield = new RaceTrack();
+        private List<RaceTrack> trackandfield = new List<RaceTrack>();
         private List<Bettor> puntList = new List<Bettor>();
 
-        public Game(List<Racer> _run, RaceTrack _track, List<Bettor> _punt)
+        public Game(List<Racer> _run, List<RaceTrack> _track, List<Bettor> _punt)
         {
             runners = _run;
             trackandfield = _track;

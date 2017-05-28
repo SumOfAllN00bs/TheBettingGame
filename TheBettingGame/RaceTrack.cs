@@ -10,19 +10,35 @@ namespace TheBettingGame
     public class RaceTrack
     {
         private List<Point> trackpositions;
-
-        internal List<Point> TrackPositions
+        private int _XOffset = 0;
+        private int _YOffset = 0;
+        
+        public int XOffset
         {
             get
             {
-                return trackpositions;
+                return _XOffset;
             }
 
             set
             {
-                trackpositions = value;
+                _XOffset = value;
             }
         }
+
+        public int YOffset
+        {
+            get
+            {
+                return _YOffset;
+            }
+
+            set
+            {
+                _YOffset = value;
+            }
+        }
+
         public Path GetPath(int i)
         {
             Log.LogWrite("i: " + i);
@@ -39,6 +55,29 @@ namespace TheBettingGame
         public Point GetLast()
         {
             return trackpositions.Last();
+        }
+
+        public void SetTrackPositions(List<Point> _trackPos) //accepts a list of points and offsets the points if needed
+        {
+            trackpositions = _trackPos;
+            if (_XOffset != 0)
+            {
+                for (int i = 0; i < trackpositions.Count; i++)
+                {
+                    trackpositions[i] = new Point( trackpositions[i].X + _XOffset, trackpositions[i].Y);
+                }
+            }
+            if (_YOffset != 0)
+            {
+                for (int i = 0; i < trackpositions.Count; i++)
+                {
+                    trackpositions[i] = new Point(trackpositions[i].X, trackpositions[i].Y + _YOffset);
+                }
+            }
+        }
+        public List<Point> GetTrackPositions()
+        {
+            return trackpositions;
         }
     }
 }

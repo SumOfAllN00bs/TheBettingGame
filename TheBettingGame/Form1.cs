@@ -16,7 +16,7 @@ namespace TheBettingGame
         private Game bettingGame;
         private List<Racer> RacingAnimals = new List<Racer>();
         private List<Bettor> BettingAnimals = new List<Bettor>();
-        private RaceTrack OvalRaceTrack = new RaceTrack();
+        private List<RaceTrack> OvalRaceTracks = new List<RaceTrack>();
         private List<Control> RacingAnimalsBodies = new List<Control>();
         public Form1()
         {
@@ -50,11 +50,9 @@ namespace TheBettingGame
                                                             new Point(351, 63),
                                                             new Point(372, 58)};
 
-
-            OvalRaceTrack.TrackPositions = OvalPoints;
-            //MessageBox.Show("Width: " + this.ClientSize.Width + " Height: " + this.ClientSize.Height
             for (int i = 0; i < 4; i++)
             {
+                //Create Control
                 RadioButton RB = new RadioButton();
                 RB.Name = "RadioButton_" + i.ToString();
                 RB.Text = i.ToString();
@@ -62,14 +60,24 @@ namespace TheBettingGame
                 RacingAnimalsBodies.Add(RB);
                 this.Controls.Add(RB);
                 RB.BringToFront();
-                Dog d = new Dog(OvalRaceTrack, RB);
+
+                //Create RaceTrack
+                RaceTrack RT = new RaceTrack();
+                int OffsetSize = 50; //the size of the gap between each racetrack
+                int OffsetZero = 2; //2 means third track
+                RT.XOffset = (i * OffsetSize) - OffsetSize * OffsetZero; //this will zero out the offset for the OffsetZero Track number
+                RT.SetTrackPositions(new List<Point>( OvalPoints));
+                OvalRaceTracks.Add(RT);
+
+                //Create Racers
+                Dog d = new Dog(RT, RB);
                 RacingAnimals.Add(d);
             }
             for (int i = 0; i < 3; i++)
             {
                 BettingAnimals.Add(new Bettor());
             }
-            bettingGame = new Game(RacingAnimals, OvalRaceTrack, BettingAnimals);
+            bettingGame = new Game(RacingAnimals, OvalRaceTracks, BettingAnimals);
         }
 
         private void pb_BackGround_Click(object sender, EventArgs e)
@@ -95,12 +103,15 @@ namespace TheBettingGame
 
         private void pb_BackGround_Paint(object sender, PaintEventArgs e)
         {
-            foreach (Point p in OvalRaceTrack.TrackPositions)
-            {
-                Rectangle r = new Rectangle((int)p.X - 10, (int)p.Y - 10, 20, 20);
-                //Log.LogWrite(r.Left.ToString() + " " + r.Top.ToString() + " " + r.Width.ToString() + " " + r.Height.ToString());
-                e.Graphics.FillEllipse(Brushes.Black, r);
-            }
+            //foreach (RaceTrack RT in OvalRaceTracks)
+            //{
+            //    foreach (Point p in RT.GetTrackPositions())
+            //    {
+            //        Rectangle r = new Rectangle((int)p.X - 10, (int)p.Y - 10, 20, 20);
+            //        //Log.LogWrite(r.Left.ToString() + " " + r.Top.ToString() + " " + r.Width.ToString() + " " + r.Height.ToString());
+            //        e.Graphics.FillEllipse(Brushes.Black, r);
+            //    } 
+            //}
         }
     }
 }
