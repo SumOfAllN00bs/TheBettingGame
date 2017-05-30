@@ -83,12 +83,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Resources\dog-running-bw1.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="1stBackGround.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\1stBackGround.png" />

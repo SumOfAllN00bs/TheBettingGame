@@ -17,69 +17,39 @@ namespace TheBettingGame
         private List<Racer> RacingAnimals = new List<Racer>();
         private List<Bettor> BettingAnimals = new List<Bettor>();
         private List<RaceTrack> OvalRaceTracks = new List<RaceTrack>();
-        private List<Control> RacingAnimalsBodies = new List<Control>();
+        private List<Bet> Bettors_Bets = new List<Bet>();
         public Form1()
         {
             InitializeComponent();
-            Log.LogWrite("##############################" +
-                         "\r\n" + DateTime.Now.ToString());
+            //Log.LogWrite("##############################" +
+            //             "\r\n" + DateTime.Now.ToString());
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            List<Point> OvalPoints = new List<Point>() {    new Point(664, 58),
-                                                            new Point(745, 77),
-                                                            new Point(817, 99),
-                                                            new Point(889, 139),
-                                                            new Point(959, 213),
-                                                            new Point(974, 290),
-                                                            new Point(932, 369),
-                                                            new Point(853, 428),
-                                                            new Point(740, 469),
-                                                            new Point(617, 492),
-                                                            new Point(497, 493),
-                                                            new Point(384, 485),
-                                                            new Point(260, 454),
-                                                            new Point(165, 407),
-                                                            new Point(99, 346),
-                                                            new Point(78, 298),
-                                                            new Point(79, 234),
-                                                            new Point(131, 156),
-                                                            new Point(213, 106),
-                                                            new Point(292, 77),
-                                                            new Point(351, 63),
-                                                            new Point(372, 58)};
-
-            for (int i = 0; i < 4; i++)
+            
+            bettingGame = new Game(RacingAnimals, OvalRaceTracks, BettingAnimals, this);
+            bettingGame.NewDefaultGame();
+            //Setup Controls for first use
+            foreach (Control C in this.Controls)
             {
-                //Create Control
-                RadioButton RB = new RadioButton();
-                RB.Name = "RadioButton_" + i.ToString();
-                RB.Text = i.ToString();
-                RB.Location = new System.Drawing.Point(52 + (i * 5), 58 + (i * 5));
-                RacingAnimalsBodies.Add(RB);
-                this.Controls.Add(RB);
-                RB.BringToFront();
-
-                //Create RaceTrack
-                RaceTrack RT = new RaceTrack();
-                int OffsetSize = 50; //the size of the gap between each racetrack
-                int OffsetZero = 2; //2 means third track
-                RT.XOffset = (i * OffsetSize) - OffsetSize * OffsetZero; //this will zero out the offset for the OffsetZero Track number
-                RT.SetTrackPositions(new List<Point>( OvalPoints));
-                OvalRaceTracks.Add(RT);
-
-                //Create Racers
-                Dog d = new Dog(RT, RB);
-                RacingAnimals.Add(d);
+                if (C != null)
+                {
+                    if (C.Tag != null)
+                    {
+                        if (C.Tag.ToString() == "Bettor")
+                        {
+                            C.Enabled = true;
+                        }
+                        if (C.Tag.ToString() == "Bet" || C.Tag.ToString() == "Race")
+                        {
+                            C.Enabled = false;
+                        }  
+                    }
+                }
             }
-            for (int i = 0; i < 3; i++)
-            {
-                BettingAnimals.Add(new Bettor());
-            }
-            bettingGame = new Game(RacingAnimals, OvalRaceTracks, BettingAnimals);
+            txt_BettorName.Select();
         }
-
         private void pb_BackGround_Click(object sender, EventArgs e)
         {
             //try
@@ -94,13 +64,11 @@ namespace TheBettingGame
             //    MessageBox.Show("Error: " + ex.Message);
             //}
         }
-
         private void gameTic_Tick(object sender, EventArgs e)
         {
             bettingGame.GameTic();
             this.pb_BackGround.Refresh();
         }
-
         private void pb_BackGround_Paint(object sender, PaintEventArgs e)
         {
             //foreach (RaceTrack RT in OvalRaceTracks)
@@ -112,6 +80,100 @@ namespace TheBettingGame
             //        e.Graphics.FillEllipse(Brushes.Black, r);
             //    } 
             //}
+        }
+        private void btn_AddBettor_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txt_BettorName.Text))
+            {
+                MessageBox.Show("Please choose an name for player");
+                return;
+            }
+            Bettor NewBettor = new Bettor(txt_BettorName.Text, 50);
+            BettingAnimals.Add(NewBettor);
+            dgv_Bettors.DataSource = null;
+            dgv_Bettors.DataSource = BettingAnimals;
+            dgv_Bettors.Columns["Name"].DisplayIndex = 0;
+            dgv_Bettors.Columns["Money"].DisplayIndex = 1;
+            dgv_Bettors.Columns["Busted"].DisplayIndex = 2;
+            txt_BettorName.Text = "";
+        }
+        private void btn_FinishBettors_Click(object sender, EventArgs e)
+        {
+            foreach (Control C in this.Controls)
+            {
+                if (C != null)
+                {
+                    if (C.Tag != null)
+                    {
+                        if (C.Tag.ToString() == "Bettor" || C.Tag.ToString() == "Race")
+                        {
+                            C.Enabled = false;
+                        }
+                        if (C.Tag.ToString() == "Bet")
+                        {
+                            C.Enabled = true;
+                        }
+                    }
+                }
+            }
+            txt_BettorName.Text = "";
+            bettingGame.CurrentBettor = 0;
+            txt_Bet_BettorName.Text = BettingAnimals[bettingGame.CurrentBettor].Name;
+            num_BetAmount.Minimum = 5;
+            num_BetAmount.Maximum = 15;
+            rb_Racer1.Select(); //gain focus
+        }
+        private void btn_PlaceBet_Click(object sender, EventArgs e)
+        {
+            Racer RacerToBetOn = null;
+            int RacerIndex = -1;
+            if (!rb_Racer1.Checked && !rb_Racer2.Checked && !rb_Racer3.Checked && !rb_Racer4.Checked)
+            {
+                MessageBox.Show("Please choose an animal to bet on.");
+                return;
+            }
+            if (rb_Racer1.Checked) RacerIndex = 0;
+            if (rb_Racer2.Checked) RacerIndex = 1;
+            if (rb_Racer3.Checked) RacerIndex = 2;
+            if (rb_Racer4.Checked) RacerIndex = 3;
+            RacerToBetOn = RacingAnimals[RacerIndex];
+            //Displayed in Datagridview     Amount       Racerindex     Punter/Bettor
+            Bet B = new Bet((int)num_BetAmount.Value, RacerToBetOn, RacerIndex + 1, BettingAnimals[bettingGame.CurrentBettor]);
+            Bettors_Bets.Add(B);
+
+            dgv_Bets.DataSource = null;
+            dgv_Bets.DataSource = Bettors_Bets;
+            dgv_Bets.Columns["Punter"].DisplayIndex = 0;
+            dgv_Bets.Columns["Amount"].DisplayIndex = 1;
+            dgv_Bets.Columns["Runner"].DisplayIndex = 2;
+
+            if (bettingGame.CurrentBettor < (BettingAnimals.Count - 1))
+            {
+                bettingGame.CurrentBettor++;
+                txt_Bet_BettorName.Text = BettingAnimals[bettingGame.CurrentBettor].Name;
+                num_BetAmount.Value = 5;
+            }
+            else
+            {
+                foreach (Control C in this.Controls)
+                {
+                    if (C != null)
+                    {
+                        if (C.Tag != null)
+                        {
+                            if (C.Tag.ToString() == "Bettor" || C.Tag.ToString() == "Bet")
+                            {
+                                C.Enabled = false;
+                            }
+                            if (C.Tag.ToString() == "Race")
+                            {
+                                C.Enabled = true;
+                            }
+                        }
+                    }
+                }
+                btn_StartRace.Select();
+            }
         }
     }
 }

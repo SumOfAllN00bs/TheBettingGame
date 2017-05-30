@@ -11,6 +11,7 @@ namespace TheBettingGame
         private int money;
         private Bet current_bet;
         private string name;
+        private bool busted = false;
 
         public int Money
         {
@@ -22,9 +23,16 @@ namespace TheBettingGame
             set
             {
                 money = value;
+                if (money > 0)
+                {
+                    Busted = false;
+                }
+                else
+                {
+                    Busted = true;
+                }
             }
         }
-
         internal Bet Current_Bet
         {
             get
@@ -37,7 +45,6 @@ namespace TheBettingGame
                 current_bet = value;
             }
         }
-
         public string Name
         {
             get
@@ -49,6 +56,25 @@ namespace TheBettingGame
             {
                 name = value;
             }
+        }
+
+        public bool Busted
+        {
+            get
+            {
+                return busted;
+            }
+
+            set
+            {
+                busted = value;
+            }
+        }
+
+        public Bettor(string _name, int _money)
+        {
+            money = _money;
+            name = _name;
         }
     }
 }

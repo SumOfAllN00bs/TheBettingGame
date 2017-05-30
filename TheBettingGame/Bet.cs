@@ -23,7 +23,7 @@ namespace TheBettingGame
                 amount = value;
             }
         }
-        internal Racer Runner
+        internal Racer racer
         {
             get
             {
@@ -35,7 +35,7 @@ namespace TheBettingGame
                 runner = value;
             }
         }
-        internal Bettor Punter
+        internal Bettor bettor
         {
             get
             {
@@ -47,11 +47,23 @@ namespace TheBettingGame
                 punter = value;
             }
         }
+        public int Runner
+        {
+            get; set;
+        }
+        public string Punter
+        {
+            get
+            {
+                return punter.Name;
+            }
+        }
 
-        public Bet(int _amt, Racer _rcr, Bettor _bttr)
+        public Bet(int _amt, Racer _rcr, int _rcr_indx, Bettor _bttr)
         {
             amount = _amt;
             runner = _rcr;
+            Runner = _rcr_indx;
             punter = _bttr;
             runner.OnWin += new EventHandler(BetWon);
             runner.OnLoss += new EventHandler(BetLost);
