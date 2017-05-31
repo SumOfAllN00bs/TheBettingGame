@@ -212,5 +212,30 @@ namespace TheBettingGame
         {
             gameTic.Start();
         }
+
+        private void btn_RestartGame_Click(object sender, EventArgs e)
+        {
+            foreach (Control C in Controls)
+            {
+                if (C is PictureBox && C.Name != "pb_BackGround")
+                {
+                    C.Paint -= pb_BackGround_Paint;
+                    C.Dispose();
+                    Controls.Remove(C);
+                }
+            }
+
+            RacingAnimals = new List<Racer>();
+            BettingAnimals = new List<Bettor>();
+            OvalRaceTracks = new List<RaceTrack>();
+            Bettors_Bets = new List<Bet>();
+            bettingGame = new Game(RacingAnimals, OvalRaceTracks, BettingAnimals, this);
+            bettingGame.NewDefaultGame();
+            ToggleControlsEnabled("Bettor", "Bet Race");
+            txt_BettorName.Select();
+
+            RefreshBettorsDataGridView();
+            RefreshBetsDataGridView();
+        }
     }
 }
