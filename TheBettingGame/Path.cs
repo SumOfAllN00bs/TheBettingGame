@@ -25,7 +25,6 @@ namespace TheBettingGame
                 A1 = value;
             }
         }
-
         public Point B
         {
             get
@@ -38,7 +37,6 @@ namespace TheBettingGame
                 B1 = value;
             }
         }
-
         public int Radius
         {
             get

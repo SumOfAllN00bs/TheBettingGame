@@ -10,6 +10,7 @@ namespace TheBettingGame
 {
     class Log
     {
+        //Default log file
         public static string LogFileName = "TheBettingGame.Log";
 
         public static void LogWrite(string text)

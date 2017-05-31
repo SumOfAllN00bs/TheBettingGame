@@ -12,7 +12,7 @@ namespace TheBettingGame
         private List<Point> trackpositions;
         private int _XOffset = 0;
         private int _YOffset = 0;
-        
+
         public int XOffset
         {
             get
@@ -63,7 +63,7 @@ namespace TheBettingGame
             {
                 for (int i = 0; i < trackpositions.Count; i++)
                 {
-                    trackpositions[i] = new Point( trackpositions[i].X + _XOffset, trackpositions[i].Y);
+                    trackpositions[i] = new Point(trackpositions[i].X + _XOffset, trackpositions[i].Y);
                 }
             }
             if (_YOffset != 0)

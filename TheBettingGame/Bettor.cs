@@ -22,6 +22,7 @@ namespace TheBettingGame
             set
             {
                 money = value;
+                Log.LogWrite(name + ": has $" + money);
                 if (money > 0)
                 {
                     Busted = false;
@@ -55,6 +56,10 @@ namespace TheBettingGame
             set
             {
                 busted = value;
+                if (busted)
+                {
+                    Log.LogWrite(name + ": is busted");
+                }
             }
         }
 

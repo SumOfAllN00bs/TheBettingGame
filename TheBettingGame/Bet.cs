@@ -65,34 +65,35 @@ namespace TheBettingGame
             runner = _rcr;
             Runner = _rcr_indx;
             punter = _bttr;
+            //Subscribe to Racer Win/Loss Events
             runner.OnWin += BetWon;
             runner.OnLoss += BetLost;
         }
         public void Dispose()
         {
+            //Unsubscribe to events
             runner.OnWin -= BetWon;
             runner.OnLoss -= BetLost;
         }
 
         public void BetWon(object o, EventArgs e)
         {
-            //Log.LogWrite("");
-            //Log.LogWrite("o: " + ((Racer)o).Me.Tag);
-            //Log.LogWrite("Before: " + punter.Money);
+            Log.LogWrite("Racer: " + ((Racer)o).Name + " won");
             punter.Money = punter.Money * 2;
-            //Log.LogWrite("After: " + punter.Money);
+            Log.LogWrite("Money won: " + punter.Money / 2);
+
         }
         public void BetLost(object o, EventArgs e)
         {
-            //Log.LogWrite("");
-            //Log.LogWrite("o: " + ((Racer)o).Me.Tag);
-            //Log.LogWrite("Before: " + punter.Money);
+            Log.LogWrite("Racer: " + ((Racer)o).Name + " lost");
+
             punter.Money = punter.Money - amount;
             if (punter.Money <= 0)
             {
                 punter.Busted = true;
+                punter.Money = 0;
             }
-            //Log.LogWrite("After: " + punter.Money);
+            Log.LogWrite("Money lost: " + amount);
         }
     }
 }

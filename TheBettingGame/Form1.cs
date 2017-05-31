@@ -15,6 +15,7 @@ namespace TheBettingGame
     {
         private Game bettingGame;
         private List<Racer> RacingAnimals = new List<Racer>();
+        //Betting Animals is the Players who bet on the race. 
         private List<Bettor> BettingAnimals = new List<Bettor>();
         private List<RaceTrack> OvalRaceTracks = new List<RaceTrack>();
         private List<Bet> Bettors_Bets = new List<Bet>();
@@ -86,7 +87,7 @@ namespace TheBettingGame
         private void btn_FinishBettors_Click(object sender, EventArgs e)
         {
             //Controls Tagged Bet are enabled and Bettor and Race are disabled
-            ToggleControlsEnabled("Bet", "Bettor Race"); 
+            ToggleControlsEnabled("Bet", "Bettor Race");
             txt_BettorName.Text = "";
             //setup next phase of game which is allowing each Bettor to Bet
             bettingGame.CurrentBettor = 0;
@@ -97,6 +98,28 @@ namespace TheBettingGame
         }
         private void btn_PlaceBet_Click(object sender, EventArgs e)
         {
+            //Try to skip over any Bettors who have busted
+            if (BettingAnimals[bettingGame.CurrentBettor].Busted)
+            {
+                if (bettingGame.CurrentBettor < (BettingAnimals.Count - 1))
+                {
+                    bettingGame.CurrentBettor++;
+                    txt_Bet_BettorName.Text = BettingAnimals[bettingGame.CurrentBettor].Name;
+                    num_BetAmount.Value = 5;
+                    num_BetAmount.Maximum = Math.Min(15, BettingAnimals[bettingGame.CurrentBettor].Money);
+                }
+                else
+                {
+                    //if there isn't anyone who is not busted
+                    if (BettingAnimals.Find(ba => !ba.Busted) == null)
+                    {
+                        MessageBox.Show("Game Over");
+                        ToggleControlsEnabled("Doesn'tExist", "Bettor Bet Race");
+                    }
+                }
+
+            }
+
             //Setup variables to find which Racer was chosen
             Racer RacerToBetOn = null;
             int RacerIndex = -1;
@@ -116,18 +139,19 @@ namespace TheBettingGame
             //Create Bet and start keeping track of it.
             Bet B = new Bet((int)num_BetAmount.Value, RacerToBetOn, RacerIndex + 1, BettingAnimals[bettingGame.CurrentBettor]);
             Bettors_Bets.Add(B);
-
             RefreshBetsDataGridView();
 
+            //if there is more bettors then go to next, else get ready to start race
             if (bettingGame.CurrentBettor < (BettingAnimals.Count - 1))
             {
                 bettingGame.CurrentBettor++;
                 txt_Bet_BettorName.Text = BettingAnimals[bettingGame.CurrentBettor].Name;
                 num_BetAmount.Value = 5;
+                num_BetAmount.Maximum = Math.Min(15, BettingAnimals[bettingGame.CurrentBettor].Money);
             }
             else
             {
-                ToggleControlsEnabled("Race", "Bettor Bet"); 
+                ToggleControlsEnabled("Race", "Bettor Bet");
                 btn_StartRace.Select();
                 num_BetAmount.Value = 5;
             }
@@ -161,31 +185,65 @@ namespace TheBettingGame
         }
         public void StopGame()
         {
+            Log.LogWrite("Race ended.");
+            //Stop timer
             gameTic.Stop();
-            MessageBox.Show("Winner is: " + RacingAnimals.Find(c => c.Won).Me.Tag);
+            MessageBox.Show("Winner is: " + RacingAnimals.Find(c => c.Won).Name + " on track: " + RacingAnimals.Find(c => c.Won).Me.Tag);
+
+            //Try to reset the state of the racers
             foreach (Racer reset_Racer in RacingAnimals)
             {
                 reset_Racer.Finished = false;
                 reset_Racer.CurrentPath = 0;
-                reset_Racer.Me.Location = new Point((int)reset_Racer.Racetrack.GetPath(reset_Racer.CurrentPath).A.X, 
+                reset_Racer.Me.Location = new Point((int)reset_Racer.Racetrack.GetPath(reset_Racer.CurrentPath).A.X,
                                                     (int)reset_Racer.Racetrack.GetPath(reset_Racer.CurrentPath).A.Y);
                 reset_Racer.Won = false;
                 reset_Racer.OnWin += bettingGame.WinnerFound;
             }
+
+            //Get rid of previous races bets
             foreach (Bet B in Bettors_Bets)
             {
                 B.Dispose();
             }
             Bettors_Bets.Clear();
+
+            //refresh
             RefreshBettorsDataGridView();
             RefreshBetsDataGridView();
+
+            //if no one exists who is not busted then game over
             if (BettingAnimals.Find(ba => !ba.Busted) == null)
             {
                 MessageBox.Show("Game Over");
                 ToggleControlsEnabled("Doesn'tExist", "Bettor Bet Race");
+                return;
             }
             ToggleControlsEnabled("Bet", "Bettor Race");
             bettingGame.CurrentBettor = 0;
+
+            //Try to skip over any Bettors who have busted
+            if (BettingAnimals[bettingGame.CurrentBettor].Busted)
+            {
+                if (bettingGame.CurrentBettor < (BettingAnimals.Count - 1))
+                {
+                    bettingGame.CurrentBettor++;
+                    txt_Bet_BettorName.Text = BettingAnimals[bettingGame.CurrentBettor].Name;
+                    num_BetAmount.Value = 5;
+                    num_BetAmount.Maximum = Math.Min(15, BettingAnimals[bettingGame.CurrentBettor].Money);
+                    return;
+                }
+                else
+                {
+                    //if there isn't anyone who is not busted
+                    if (BettingAnimals.Find(ba => !ba.Busted) == null)
+                    {
+                        MessageBox.Show("Game Over");
+                        ToggleControlsEnabled("Doesn'tExist", "Bettor Bet Race");
+                    }
+                }
+
+            }
             txt_Bet_BettorName.Text = BettingAnimals[bettingGame.CurrentBettor].Name;
             pb_BackGround.Refresh();
             rb_Racer1.Select();
@@ -210,6 +268,12 @@ namespace TheBettingGame
         }
         private void btn_StartRace_Click(object sender, EventArgs e)
         {
+            foreach (Racer R in RacingAnimals)
+            {
+                //Inheritance based Polymorphism
+                R.SetNames();
+                R.Name = R.RandomName();
+            }
             gameTic.Start();
         }
 

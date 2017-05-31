@@ -48,6 +48,7 @@ namespace TheBettingGame
                     continue;
                 }
                 _racer.Think();
+                _racer.Me.Refresh();
             }
             if (RacersFinished == runners.Count)
             {
@@ -73,6 +74,7 @@ namespace TheBettingGame
         }
         public void NewDefaultGame()
         {
+            Log.LogWrite("Game Started.");
             List<Point> OvalPoints = new List<Point>() {    new Point(664, 58),
                                                             new Point(745, 77),
                                                             new Point(817, 99),
@@ -131,7 +133,15 @@ namespace TheBettingGame
         {
             using (Font myFont = new Font("Arial", 14))
             {
-                e.Graphics.DrawString(((PictureBox)sender).Tag.ToString(), myFont, Brushes.DarkGray, new Point(2, 2));
+                try
+                {
+                    //e.Graphics.DrawString(((PictureBox)sender).Tag.ToString(), myFont, Brushes.Blue, new Point(2, 2));
+                    e.Graphics.DrawString(runners[Convert.ToInt16(((PictureBox)sender).Tag) - 1].Name, myFont, Brushes.BlueViolet, new Point(2, 2));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: " + ex.Message);
+                }
             }
         }
     }

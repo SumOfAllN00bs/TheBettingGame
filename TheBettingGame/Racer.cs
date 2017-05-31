@@ -12,10 +12,11 @@ namespace TheBettingGame
     public class Racer
     {
         private Control _me;
-
+        private string name;
+        protected List<string> Names;
         private RaceTrack racetrack; //will tell racer what race track is being used.
         private int currentPath; // will tell racer which subsection of the track is currently being run.
-        private Random chaos = new Random(); //is the source of chaos for the game.
+        private Random chaos = new Random(Guid.NewGuid().GetHashCode()); //is the source of chaos for the game.
         private bool finished = false; //will be used to determine if racer needs to continue race
         private double delta_time; // the elapsed time between think calls
         private int base_speed; // the speed of the racers type. Dogs will be one speed Horses another. and more besides if you want to extend the types
@@ -96,6 +97,47 @@ namespace TheBettingGame
             }
         }
 
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+
+            set
+            {
+                name = value;
+                Log.LogWrite("New Name: " + name);
+            }
+        }
+
+        public string RandomName()
+        {
+            if (Names != null && Names.Count > 0)
+            {
+                return Names[chaos.Next(0, Names.Count)];
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public string RandomName(int i)
+        {
+            if (Names != null && Names.Count > 0)
+            {
+                return Names[i];
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public virtual void SetNames()
+        {
+            Names = new List<string>();
+        }
+
         public event EventHandler OnWin;    //the event of the racer reaching end.
         public event EventHandler OnLoss;   //the event of the racer being beaten by another racer. Called from ForceLoss which is called from Game class
 
@@ -161,7 +203,7 @@ namespace TheBettingGame
         }
         public void ForceWin()
         {
-            if(OnWin != null)
+            if (OnWin != null)
             {
                 OnWin(this, new EventArgs());
             }
@@ -173,7 +215,7 @@ namespace TheBettingGame
                 foreach (Delegate d in OnWin.GetInvocationList())
                 {
                     OnWin -= (EventHandler)d;
-                } 
+                }
             }
             OnWin = null;
         }
@@ -185,12 +227,35 @@ namespace TheBettingGame
         {
             Speed = 150;
         }
+        public override void SetNames()
+        {
+            Names = new List<string>() {    "Spot",
+                                            "Rocky",
+                                            "Lola",
+                                            "Princess",
+                                            "Lucky",
+                                            "Rover",
+                                            "Oliver",
+                                            "Angel",
+                                            "Sam",
+                                            "Oscar",
+                                            "Emma",
+                                            "Teddy",
+                                            "Annie",
+                                            "Winston",
+                                            "Rosie",
+                                            "Sammy" };
+        }
     }
     public class Horse : Racer
     {
         public Horse(RaceTrack rt, Control rc) : base(rt, rc)
         {
             Speed = 200;
+        }
+        public override void SetNames()
+        {
+            Names = new List<string>() { "Ace Of Spades", "Noir", "Cinnamon", "Onyx", "Autumn", "Russel" };
         }
     }
 }
