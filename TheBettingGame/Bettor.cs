@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace TheBettingGame
 {
-    class Bettor
+    public class Bettor
     {
         private int money;
-        private Bet current_bet;
         private string name;
         private bool busted = false;
 
@@ -31,18 +30,6 @@ namespace TheBettingGame
                 {
                     Busted = true;
                 }
-            }
-        }
-        internal Bet Current_Bet
-        {
-            get
-            {
-                return current_bet;
-            }
-
-            set
-            {
-                current_bet = value;
             }
         }
         public string Name

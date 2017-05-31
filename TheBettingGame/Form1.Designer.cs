@@ -235,6 +235,7 @@
             this.btn_StartRace.Tag = "Race";
             this.btn_StartRace.Text = "Start Race";
             this.btn_StartRace.UseVisualStyleBackColor = true;
+            this.btn_StartRace.Click += new System.EventHandler(this.btn_StartRace_Click);
             // 
             // btn_RestartGame
             // 

@@ -23,7 +23,7 @@ namespace TheBettingGame
                 amount = value;
             }
         }
-        internal Racer racer
+        public Racer racer
         {
             get
             {
@@ -51,7 +51,7 @@ namespace TheBettingGame
         {
             get; set;
         }
-        public string Punter
+        public string PunterName
         {
             get
             {
@@ -65,17 +65,34 @@ namespace TheBettingGame
             runner = _rcr;
             Runner = _rcr_indx;
             punter = _bttr;
-            runner.OnWin += new EventHandler(BetWon);
-            runner.OnLoss += new EventHandler(BetLost);
+            runner.OnWin += BetWon;
+            runner.OnLoss += BetLost;
+        }
+        public void Dispose()
+        {
+            runner.OnWin -= BetWon;
+            runner.OnLoss -= BetLost;
         }
 
-        protected void BetWon(object o, EventArgs e)
+        public void BetWon(object o, EventArgs e)
         {
+            //Log.LogWrite("");
+            //Log.LogWrite("o: " + ((Racer)o).Me.Tag);
+            //Log.LogWrite("Before: " + punter.Money);
             punter.Money = punter.Money * 2;
+            //Log.LogWrite("After: " + punter.Money);
         }
-        protected void BetLost(object o, EventArgs e)
+        public void BetLost(object o, EventArgs e)
         {
+            //Log.LogWrite("");
+            //Log.LogWrite("o: " + ((Racer)o).Me.Tag);
+            //Log.LogWrite("Before: " + punter.Money);
             punter.Money = punter.Money - amount;
+            if (punter.Money <= 0)
+            {
+                punter.Busted = true;
+            }
+            //Log.LogWrite("After: " + punter.Money);
         }
     }
 }

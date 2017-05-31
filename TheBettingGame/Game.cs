@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace TheBettingGame
 {
-    class Game
+    public class Game
     {
         private List<Racer> runners = new List<Racer>();
         private List<RaceTrack> trackandfield = new List<RaceTrack>();
@@ -34,19 +34,24 @@ namespace TheBettingGame
             runners = _run;
             trackandfield = _track;
             puntList = _punt;
+            //need access to form to do things like Stop the timer
             TheBettingGameForm = _TheBettingGameForm;
-
-            foreach (Racer R in runners)
-            {
-                R.OnWin += new EventHandler(WinnerFound);
-                R.Speed = (int)(R.Speed + R.Speed * (new Random().Next(15, 30) / 100.0));
-            }
         }
         public void GameTic()
         {
+            int RacersFinished = 0;
             foreach (Racer _racer in runners)
             {
+                if (_racer.Finished)
+                {
+                    RacersFinished += 1;
+                    continue;
+                }
                 _racer.Think();
+            }
+            if (RacersFinished == runners.Count)
+            {
+                TheBettingGameForm.StopGame();
             }
         }
         public void WinnerFound(object o, EventArgs e)
@@ -55,12 +60,14 @@ namespace TheBettingGame
             {
                 if (R.Equals(o))
                 {
+                    R.Won = true;
                     continue;
                 }
                 else
                 {
+                    R.Won = false;
                     R.ForceLoss();
-                    R.ClearEvents();
+                    R.ClearWin();
                 }
             }
         }
@@ -94,12 +101,9 @@ namespace TheBettingGame
             {
                 //Create Control
                 PictureBox PB = new PictureBox();
-                PB.Name = "RadioButton_" + i.ToString();
-                PB.Text = i.ToString();
-                PB.Location = new System.Drawing.Point(52 + (i * 5), 58 + (i * 5));
                 PB.Image = global::TheBettingGame.Properties.Resources.dog_running_bw1;
                 PB.SizeMode = PictureBoxSizeMode.StretchImage;
-                PB.BackColor = Color.Transparent;
+                PB.Name = "Racer_Dog" + i;
                 PB.Tag = (i + 1).ToString(); //Used for the Paint Method later on
                 PB.Paint += pb_Picture_Paint;
                 RacingAnimalsBodies.Add(PB);
@@ -108,6 +112,9 @@ namespace TheBettingGame
 
                 //Create RaceTrack
                 RaceTrack RT = new RaceTrack();
+
+                //Using the points in Oval Points each Racer will get an Offset to use to alter the path of the race track so each racer races on their own track.
+                //this makes it so that the racers are easier to distinguish when they overlap they only overlap by a small amount
                 int OffsetSize = 50; //the size of the gap between each racetrack
                 int OffsetZero = 2; //2 means third track
                 RT.XOffset = (i * OffsetSize) - OffsetSize * OffsetZero; //this will zero out the offset for the OffsetZero Track number
@@ -116,12 +123,8 @@ namespace TheBettingGame
 
                 //Create Racers
                 Dog d = new Dog(RT, PB);
+                d.OnWin += WinnerFound;
                 runners.Add(d);
-            }
-            //Setup Bettors
-            for (int i = 0; i < 3; i++)
-            {
-                //BettingAnimals.Add(new Bettor());
             }
         }
         private void pb_Picture_Paint(object sender, PaintEventArgs e)

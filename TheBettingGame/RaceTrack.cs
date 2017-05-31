@@ -25,7 +25,6 @@ namespace TheBettingGame
                 _XOffset = value;
             }
         }
-
         public int YOffset
         {
             get
@@ -41,7 +40,7 @@ namespace TheBettingGame
 
         public Path GetPath(int i)
         {
-            Log.LogWrite("i: " + i);
+            //Log.LogWrite("i: " + i);
             if (trackpositions.Count > 1 && i < trackpositions.Count - 1)
             {
                 Path p = new Path();
