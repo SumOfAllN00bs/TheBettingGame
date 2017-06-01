@@ -19,6 +19,7 @@ namespace TheBettingGame
         private List<Bettor> BettingAnimals = new List<Bettor>();
         private List<RaceTrack> OvalRaceTracks = new List<RaceTrack>();
         private List<Bet> Bettors_Bets = new List<Bet>();
+        private bool stopped = false;
         public Form1()
         {
             InitializeComponent();
@@ -98,28 +99,6 @@ namespace TheBettingGame
         }
         private void btn_PlaceBet_Click(object sender, EventArgs e)
         {
-            //Try to skip over any Bettors who have busted
-            if (BettingAnimals[bettingGame.CurrentBettor].Busted)
-            {
-                if (bettingGame.CurrentBettor < (BettingAnimals.Count - 1))
-                {
-                    bettingGame.CurrentBettor++;
-                    txt_Bet_BettorName.Text = BettingAnimals[bettingGame.CurrentBettor].Name;
-                    num_BetAmount.Value = 5;
-                    num_BetAmount.Maximum = Math.Min(15, BettingAnimals[bettingGame.CurrentBettor].Money);
-                }
-                else
-                {
-                    //if there isn't anyone who is not busted
-                    if (BettingAnimals.Find(ba => !ba.Busted) == null)
-                    {
-                        MessageBox.Show("Game Over");
-                        ToggleControlsEnabled("Doesn'tExist", "Bettor Bet Race");
-                    }
-                }
-
-            }
-
             //Setup variables to find which Racer was chosen
             Racer RacerToBetOn = null;
             int RacerIndex = -1;
@@ -140,20 +119,9 @@ namespace TheBettingGame
             Bet B = new Bet((int)num_BetAmount.Value, RacerToBetOn, RacerIndex + 1, BettingAnimals[bettingGame.CurrentBettor]);
             Bettors_Bets.Add(B);
             RefreshBetsDataGridView();
-
-            //if there is more bettors then go to next, else get ready to start race
-            if (bettingGame.CurrentBettor < (BettingAnimals.Count - 1))
-            {
-                bettingGame.CurrentBettor++;
-                txt_Bet_BettorName.Text = BettingAnimals[bettingGame.CurrentBettor].Name;
-                num_BetAmount.Value = 5;
-                num_BetAmount.Maximum = Math.Min(15, BettingAnimals[bettingGame.CurrentBettor].Money);
-            }
-            else
+            if (!ReadyBets()) //if end of list of bettors
             {
                 ToggleControlsEnabled("Race", "Bettor Bet");
-                btn_StartRace.Select();
-                num_BetAmount.Value = 5;
             }
         }
         public void ToggleControlsEnabled(string EnableString, string DisableString)
@@ -185,10 +153,24 @@ namespace TheBettingGame
         }
         public void StopGame()
         {
+            if (stopped)
+            {
+                return;
+            }
             Log.LogWrite("Race ended.");
             //Stop timer
             gameTic.Stop();
             MessageBox.Show("Winner is: " + RacingAnimals.Find(c => c.Won).Name + " on track: " + RacingAnimals.Find(c => c.Won).Me.Tag);
+            var x = BettingAnimals.FindAll(c => !c.Busted);
+            if (x.Count == 1)
+            {
+                MessageBox.Show("Bettor " + x[0].Name + " has won the game with $" + x[0].Money);
+                MessageBox.Show("Game Over");
+                ToggleControlsEnabled("Doesn'tExist", "Bettor Bet Race");
+                stopped = true;
+                GameOver();
+                return;
+            }
 
             //Try to reset the state of the racers
             foreach (Racer reset_Racer in RacingAnimals)
@@ -217,33 +199,13 @@ namespace TheBettingGame
             {
                 MessageBox.Show("Game Over");
                 ToggleControlsEnabled("Doesn'tExist", "Bettor Bet Race");
+                GameOver();
                 return;
             }
             ToggleControlsEnabled("Bet", "Bettor Race");
-            bettingGame.CurrentBettor = 0;
 
             //Try to skip over any Bettors who have busted
-            if (BettingAnimals[bettingGame.CurrentBettor].Busted)
-            {
-                if (bettingGame.CurrentBettor < (BettingAnimals.Count - 1))
-                {
-                    bettingGame.CurrentBettor++;
-                    txt_Bet_BettorName.Text = BettingAnimals[bettingGame.CurrentBettor].Name;
-                    num_BetAmount.Value = 5;
-                    num_BetAmount.Maximum = Math.Min(15, BettingAnimals[bettingGame.CurrentBettor].Money);
-                    return;
-                }
-                else
-                {
-                    //if there isn't anyone who is not busted
-                    if (BettingAnimals.Find(ba => !ba.Busted) == null)
-                    {
-                        MessageBox.Show("Game Over");
-                        ToggleControlsEnabled("Doesn'tExist", "Bettor Bet Race");
-                    }
-                }
-
-            }
+            ReadyBets(true);
             txt_Bet_BettorName.Text = BettingAnimals[bettingGame.CurrentBettor].Name;
             pb_BackGround.Refresh();
             rb_Racer1.Select();
@@ -276,7 +238,6 @@ namespace TheBettingGame
             }
             gameTic.Start();
         }
-
         private void btn_RestartGame_Click(object sender, EventArgs e)
         {
             foreach (Control C in Controls)
@@ -300,6 +261,55 @@ namespace TheBettingGame
 
             RefreshBettorsDataGridView();
             RefreshBetsDataGridView();
+        }
+        public bool ReadyBets(bool startagain = false)
+        {
+            //returns false if No new Bettor was loaded
+            var BettorsInGame = BettingAnimals.FindAll(ba => !ba.Busted);
+            if (BettorsInGame.Count > 1) //more than one bettor means game must go on
+            {
+                if (startagain)
+                {
+                    bettingGame.CurrentBettor = BettingAnimals.FindIndex(ba => !ba.Busted);
+                }
+                else
+                {
+                    var CurrentValidBettor = BettorsInGame.Find(BIG => BIG == BettingAnimals[bettingGame.CurrentBettor]);
+                    var CurrentValidBettorIndex = BettorsInGame.FindIndex(big => big == CurrentValidBettor);
+                    if (CurrentValidBettorIndex == BettorsInGame.Count - 1)
+                    {
+                        num_BetAmount.Value = 5;
+                        return false;
+                    }
+                    else
+                    {
+                        CurrentValidBettorIndex++;
+                    }
+                    var newI = BettingAnimals.FindIndex(BA => BA == BettorsInGame[CurrentValidBettorIndex]);
+                    bettingGame.CurrentBettor = newI;
+                }
+                txt_Bet_BettorName.Text = BettingAnimals[bettingGame.CurrentBettor].Name;
+                num_BetAmount.Maximum = Math.Min(15, BettingAnimals[bettingGame.CurrentBettor].Money);
+                num_BetAmount.Value = 5;
+                return true;
+
+            }
+            else if (BettorsInGame.Count == 1) //one bettor left
+            {
+                MessageBox.Show("Bettor " + BettorsInGame[0].Name + " has won the game with $" + BettorsInGame[0].Money);
+                MessageBox.Show("Game Over");
+                GameOver();
+            }
+            else //all Bettors are busted
+            {
+                MessageBox.Show("Game Over");
+                GameOver();
+            }
+            return false;
+        }
+        public void GameOver()
+        {
+            this.Close();
         }
     }
 }

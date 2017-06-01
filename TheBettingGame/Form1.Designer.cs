@@ -239,12 +239,14 @@
             // 
             // btn_RestartGame
             // 
+            this.btn_RestartGame.Enabled = false;
             this.btn_RestartGame.Location = new System.Drawing.Point(694, 650);
             this.btn_RestartGame.Name = "btn_RestartGame";
             this.btn_RestartGame.Size = new System.Drawing.Size(75, 23);
             this.btn_RestartGame.TabIndex = 11;
             this.btn_RestartGame.Text = "Restart";
             this.btn_RestartGame.UseVisualStyleBackColor = true;
+            this.btn_RestartGame.Visible = false;
             this.btn_RestartGame.Click += new System.EventHandler(this.btn_RestartGame_Click);
             // 
             // btn_FinishBettors
